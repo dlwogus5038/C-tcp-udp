@@ -121,17 +121,17 @@ In order
 > 5. Client responds with the email address as the password
 > “PASS dangfan@163.com”
 > 6. Server determines that the username and password are acceptable. It logs the client in and displays the welcome message. Notice that only the last line of the welcome message contains a valid mark as explained in section 3.5
-> > 230-
-> > 230-Welcome to
-> > 230- School of Software\r\n
-> > 230- FTP Archives at ftp.ssast.org\r\n
-> > 230-\r\n
-> > 230-This site is provided as a public service by School of\r\n
-> > 230-Software. Use in violation of any applicable laws is strictly\r\n
-> > 230-prohibited. We make no guarantees, explicit or implicit, about the\r\n
-> > 230-contents of this site. Use at your own risk.\r\n
-> > 230-\r\n
-> > 230 Guest login ok, access restrictions apply.\r\n
+> > 230-  
+> > 230-Welcome to  
+> > 230- School of Software  
+> > 230- FTP Archives at ftp.ssast.org  
+> > 230-  
+> > 230-This site is provided as a public service by School of  
+> > 230-Software. Use in violation of any applicable laws is strictly  
+> > 230-prohibited. We make no guarantees, explicit or implicit, about the  
+> > 230-contents of this site. Use at your own risk.  
+> > 230-  
+> > 230 Guest login ok, access restrictions apply.  
 > 7. Client tries to determine the servers operating system and type settings by sending a SYST command
 > “SYST”
 > 8. Server responds with its SYST settings
@@ -162,9 +162,9 @@ In order
 > 21. Client decides to logout
 > “QUIT”
 > 22. Server logs the client out and displays some statistics about the ftp connection
-> > 221-You have transferred 52 bytes in 2 files.
-> > 221-Total traffic for this session was 1975 bytes in 2 transfers.
-> > 221-Thank you for using the FTP service on ftp.ssast.org.\r\n
-> > 221 Goodbye.\r\n
+> > 221-You have transferred 52 bytes in 2 files.  
+> > 221-Total traffic for this session was 1975 bytes in 2 transfers.  
+> > 221-Thank you for using the FTP service on ftp.ssast.org.  
+> > 221 Goodbye.  
   
   
