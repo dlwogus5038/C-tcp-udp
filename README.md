@@ -39,3 +39,23 @@ In order
 
 # 프로젝트 진행 기간
 2017.10.13. ~ 2017.11.03. (3주)
+
+# Task1 : UDP Programming
+- Modify the UDP Server & Client
+- (Option) How to write a chat proramming (two clients chat with each other) with UDP?
+- (Option) Can we use the DUP to transfer a file? If so, how?
+
+# Task2 : Implementing FTP
+## FTP Server
+ - Berkeley Socket API와 C언어를 사용하여 FTP 서버 구현.
+ - Port와 Directory 두가지 매개변수를 받아야 함.
+ - USER, PASS, RETR, STOR, QUIT, SYST, TYPE, PORT, PASV, MKD, CWD, LIST, RMD 명령어 구현 필요.
+ - 잘못된 입력을 합리적으로 처리하고 방어 가능한 오류 코드를 생성해야함.
+ - 여러 클라이언트의 연결을 지원.
+ - FTP 기능이 구현돼있는 특정 라이브러리 사용 금지.
+ - (Option) How to transfer large files without blocking the server?
+ ## FTP Client
+  - 원하는 언어로 작성
+  - USER, PASS, TYPE, RETR, STOR, QUIT, PORT, PASV 명령어를 구현해야 하고, 서버에 로그인하는 기능과 파일을 업로드/다운로드 하는 기능 구현 필요.
+  - 디렉토리 생성, 변경, 나열, 제거 작업 지원.
+  
