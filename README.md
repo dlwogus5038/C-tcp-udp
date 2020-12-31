@@ -167,4 +167,5 @@ In order
 > > 221-Thank you for using the FTP service on ftp.ssast.org.  
 > > 221 Goodbye.  
   
-  
+# 얻은점
+C언어로 UDP 채팅 구현, FTP 서버 구축하는 법에 대해 배움. 기술적으로는 소켓을 이용해 통신하는법, TCP와 UDP의 연결 방식, 멀티스레딩을 이용한 병렬처리에 대해 배울 수 있었음.
