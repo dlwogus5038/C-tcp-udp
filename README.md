@@ -59,3 +59,17 @@ In order
   - USER, PASS, TYPE, RETR, STOR, QUIT, PORT, PASV 명령어를 구현해야 하고, 서버에 로그인하는 기능과 파일을 업로드/다운로드 하는 기능 구현 필요.
   - 디렉토리 생성, 변경, 나열, 제거 작업 지원.
   
+  # 명령어 설명
+  ## USER  
+  로그인 ID 입력 명령.
+  클라이언트 측에서 "USER anonymous" 라고 입력하면 "331 Guest login ok, send yout password." 라는 메세지 전달해주기.
+  ## PASS
+  로그인 PW 입력 명령.
+  클라이언트측에서 "PASS XXXX" 라고 입력하면 "230 Login successful" 메세지 전달.
+  ## PORT
+  FTP는 파일이나 디렉토리를 전송할때 또다른 연결을 생성해서 전송을 진행함. 클라이언트가 연결을 요청할때 사용하는 명령어.  
+  PORT 요청은 h1,h2,h3,h4,p1,p2 6가지 매개변수를 함께 서버로 보냄.  
+  클라이언트가 TCP 포트 p1*256+p2의 연결을 IP 주소 h1.h2.h3.h4에서 수신 대기 중임을 의미.
+  서버는 PORT 명령어를 받자마자 연결하는게 아니라, 클라이언트가 RETR 명령어를 보내고 서버가 initial mark를 보낸 후에 연결을 시도함.
+  연결 성공시 code 200을 보내고, 연결이 실패하면 code 425를 보냄.
+  
