@@ -60,16 +60,111 @@ In order
   - 디렉토리 생성, 변경, 나열, 제거 작업 지원.
   
   # 명령어 설명
+  
   ## USER  
   로그인 ID 입력 명령.
   클라이언트 측에서 "USER anonymous" 라고 입력하면 "331 Guest login ok, send yout password." 라는 메세지 전달해주기.
+  
   ## PASS
   로그인 PW 입력 명령.
   클라이언트측에서 "PASS XXXX" 라고 입력하면 "230 Login successful" 메세지 전달.
+  
   ## PORT
   FTP는 파일이나 디렉토리를 전송할때 또다른 연결을 생성해서 전송을 진행함. 클라이언트가 연결을 요청할때 사용하는 명령어.  
   PORT 요청은 h1,h2,h3,h4,p1,p2 6가지 매개변수를 함께 서버로 보냄.  
-  클라이언트가 TCP 포트 p1*256+p2의 연결을 IP 주소 h1.h2.h3.h4에서 수신 대기 중임을 의미.
-  서버는 PORT 명령어를 받자마자 연결하는게 아니라, 클라이언트가 RETR 명령어를 보내고 서버가 initial mark를 보낸 후에 연결을 시도함.
+  클라이언트가 TCP 포트 p1*256+p2의 연결을 IP 주소 h1.h2.h3.h4에서 수신 대기 중임을 의미.  
+  서버는 PORT 명령어를 받자마자 연결하는게 아니라, 클라이언트가 RETR 명령어를 보내고 서버가 initial mark를 보낸 후에 연결을 시도함. 
   연결 성공시 code 200을 보내고, 연결이 실패하면 code 425를 보냄.
+  
+  ## PASV
+  PORT와 비슷한 명령어. 하지만 PASV 명령어는 PORT 명령어와 반대로 서버가 클라이언트측으로 연결 가능한 IP 주소와 PORT 번호를 전송함.  
+  클라이언트가 PASV 명령어를 보내면 서버는 "227 Entering Passive Mode (166,111,80,233,128,2)" 와 같은 메세지 전송.  
+  해당 메세지를 보내기 전에 서버는 해당 포트에 소켓을 열어서 연결을 대기하고 있어야함.  
+  만약 클라이언트가 PASV 명령어를 이미 보낸 상태에서 다시 PASV 명령어를 보낼시에는 기존에 대기하고 있던 포트를 막고 기존의 연결을 끊음. 그리고 다시 새로운 연결 시도.
+  PORT 명령어와 PASV 명령어는 일회용임. 한번 파일이 전송이 끝나면 다시 PORT나 PASV 명령어로 연결해서 파일을 전송해야함.
+  
+  ## RETR
+  FTP는 파일을 전송할때 사용됨. RETR은 서버로부터 특정 파일을 다운로드 받고 싶을때 사용하는 명령어. 파일 전송은 Binary Mode로 진행됨.  
+  "RETR <filename>" 같이 사용됨.
+  - 전체 파일이 서버의 TCP 버퍼에 성공적으로 기록된 경우 코드 226으로 RETR 요청을 수락.  
+  - TCP 연결이 설정되지 않은 경우 코드 425로 RET 요청을 거부.  
+  - TCP 연결이 설정되었으나 클라이언트 또는 네트워크 오류로 중단된 경우 코드 426으로 RET 요청을 거부.  
+  - 서버에서 디스크에서 파일을 읽는 데 문제가 있는 경우 코드 451 또는 551을 사용하여 RET 요청을 거부. 서버는 이러한 경우 각각 데이터 연결을 닫음.  
+  클라이언트는 서버가 파일을 전송 완료하고 연결을 닫을때까지 아무런 response를 서버로부터 받지 못함.
+  
+  ## STOR
+  STOR은 서버에 특정 파일을 저장하고 싶을 때 사용하는 명령어.  
+  RETR과 STOR 명령을 수행하고 있을때는 해당 클라이언트로 부터 오는 명령어를 모두 무시해야함. (ABOR / QUIT 같은 명령어는 가능)  
+  해당 클라이언트로 부터 오는 명령만 전부 무시해야하는거고, 새로운 클라이언트와의 연결이나 파일 전송은 정상적으로 수행돼야함.
+  
+  ## SYST
+  해당 명령을 받으면 "215 UNIX Type: L8" 메세지를 클라이언트로 전달
+  
+  ## TYPE
+  "TYPE I" 라는 명령을 받으면 "200 Type set to I" 라는 메세지를 클라이언트로 전달.
+  
+  ## QUIT
+  QUIT 명령을 받으면 해당 클라이언트를 로그아웃 시켜야함. 해당 클라이언트가 연결한 파일 전송용 연결들도 전부 끊어야함.
+  
+  ## ABOR
+  Abort는 QUIT과 비슷한 명령.
+  
+## EXAMPLE
+
+> 1. Client connects to the server (ftp.ssast.org)
+> 2. Server responds with an initial message
+> “220 ftp.ssast.org FTP server ready.”
+> 3. Client then attempts to log in by sending
+> “USER anonymous”
+> 4. Server parses the argument, determines it is open and requests the client for the password with the following response
+> “331 Guest login ok, send your complete e-mail address as password.”
+> 5. Client responds with the email address as the password
+> “PASS dangfan@163.com”
+> 6. Server determines that the username and password are acceptable. It logs the client in and displays the welcome message. Notice that only the last line of the welcome message contains a valid mark as explained in section 3.5
+> > 230-
+> > 230-Welcome to
+> > 230- School of Software\r\n
+> > 230- FTP Archives at ftp.ssast.org\r\n
+> > 230-\r\n
+> > 230-This site is provided as a public service by School of\r\n
+> > 230-Software. Use in violation of any applicable laws is strictly\r\n
+> > 230-prohibited. We make no guarantees, explicit or implicit, about the\r\n
+> > 230-contents of this site. Use at your own risk.\r\n
+> > 230-\r\n
+> > 230 Guest login ok, access restrictions apply.\r\n
+> 7. Client tries to determine the servers operating system and type settings by sending a SYST command
+> “SYST”
+> 8. Server responds with its SYST settings
+> “215 UNIX Type: L8”
+> 9. Client decides to set the TYPE to binary (type I)
+> “TYPE I”
+> 10. Server responds that the operation was successful
+> “200 Type set to I.”
+> 11. Client sends the PORT command to the server
+> “PORT 166,111,80,233,128,79”
+> 12. Server responds that it acknowledges the PORT command
+> “200 PORT command successful.”
+> 13. Client attempts to retrieve a file (robots.txt)
+> “RETR robots.txt”
+> 14. Server opens a binary connection to the IP address and port number specified by the earlier PORT command
+> “50 Opening BINARY mode data connection for robots.txt (26 bytes).”
+> 15. Server tells the client that the transfer is complete
+> “226 Transfer complete.”
+> 16. Client decides to tell the server to use PASV mode instead
+> “PASV”
+> 17. Server responds with the IP address and port number for the client to connect to
+> “227 Entering Passive Mode (166,111,80,233,102,109)”
+> 18. Client retrieves the same file again (robots.txt) “RETR robots.txt”
+> 19. Server accepts a connection from the client to the IP address and port number specified by the PASV command. It sends the file over in binary mode. Note that the messages that the server returns are identical in both PORT and PASV mode.
+> “150 Opening BINARY mode data connection for robots.txt (26 bytes).”
+> 20. Server tells the client that the transfer is complete
+> “226 Transfer complete.”
+> 21. Client decides to logout
+> “QUIT”
+> 22. Server logs the client out and displays some statistics about the ftp connection
+> > 221-You have transferred 52 bytes in 2 files.
+> > 221-Total traffic for this session was 1975 bytes in 2 transfers.
+> > 221-Thank you for using the FTP service on ftp.ssast.org.\r\n
+> > 221 Goodbye.\r\n
+  
   
